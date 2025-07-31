@@ -1,0 +1,2 @@
+- name: اتصال به کلاستر با دستور join
+  shell: "{{ hostvars[groups['master'][0]].join_command.stdout }} --ignore-preflight-errors=all"

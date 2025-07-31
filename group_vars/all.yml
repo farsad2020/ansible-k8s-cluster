@@ -1,0 +1,26 @@
+ansible_become: true
+
+# Kubernetes version
+kubernetes_version: "1.29.2"
+pod_network_cidr: "10.244.0.0/16"
+
+# MASTER node
+master_host: t3gr2-7
+master_domain: vm.lab.mecan.ir
+master_port: 7307
+master_user: t3gr2-7
+master_pass: "{{ lookup('env', 'MASTER_PASS') }}"
+
+# WORKER 1
+worker1_host: t3gr2-8
+worker1_domain: vm.lab.mecan.ir
+worker1_port: 7308
+worker1_user: t3gr2-8
+worker1_pass: "{{ lookup('env', 'WORKER1_PASS') }}"
+
+# WORKER 2
+worker2_host: t3gr2-9
+worker2_domain: vm.lab.mecan.ir
+worker2_port: 7309
+worker2_user: t3gr2-9
+worker2_pass: "{{ lookup('env', 'WORKER2_PASS') }}"

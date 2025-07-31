@@ -1,0 +1,50 @@
+name: Deploy Kubernetes Cluster
+
+on:
+  workflow_dispatch:
+
+env:
+  MASTER_HOST: t3gr2-7
+  MASTER_DOMAIN: vm.lab.mecan.ir
+  MASTER_PORT: 7307
+  MASTER_USER: t3gr2-7
+
+  WORKER1_HOST: t3gr2-8
+  WORKER1_DOMAIN: vm.lab.mecan.ir
+  WORKER1_PORT: 7308
+  WORKER1_USER: t3gr2-8
+
+  WORKER2_HOST: t3gr2-9
+  WORKER2_DOMAIN: vm.lab.mecan.ir
+  WORKER2_PORT: 7309
+  WORKER2_USER: t3gr2-9
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Set SSH passwords as secrets
+        env:
+          MASTER_PASS: ${{ secrets.MASTER_PASS }}
+          WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
+          WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
+        run: |
+          echo "MASTER_PASS=$MASTER_PASS" >> $GITHUB_ENV
+          echo "WORKER1_PASS=$WORKER1_PASS" >> $GITHUB_ENV
+          echo "WORKER2_PASS=$WORKER2_PASS" >> $GITHUB_ENV
+
+      - name: Run Ansible playbook to deploy k8s cluster
+        env:
+          MASTER_PASS: ${{ secrets.MASTER_PASS }}
+          WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
+          WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
+        run: |
+          ansible-playbook -i inventory.ini playbook.yaml

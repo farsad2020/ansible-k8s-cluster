@@ -1,0 +1,21 @@
+- name: نصب و راه‌اندازی Kubernetes Cluster
+  hosts: all
+  become: true
+  vars:
+    pod_network_cidr: "10.244.0.0/16"
+    kubernetes_version: "1.29.2"
+
+  roles:
+    - common
+
+- name: راه‌اندازی Master Node
+  hosts: master
+  become: true
+  roles:
+    - master
+
+- name: راه‌اندازی Worker Nodes و اتصال به Cluster
+  hosts: workers
+  become: true
+  roles:
+    - worker

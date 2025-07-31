@@ -1,0 +1,40 @@
+- name: نصب پیش‌نیازها
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    update_cache: yes
+    state: present
+
+- name: اضافه کردن کلید GPG برای Kubernetes
+  shell: |
+    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/kubernetes.gpg
+
+- name: اضافه کردن مخزن Kubernetes
+  apt_repository:
+    repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    filename: kubernetes
+    state: present
+
+- name: نصب kubelet، kubeadm و kubectl
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    update_cache: yes
+    state: present
+
+- name: غیرفعال‌سازی swap
+  command: swapoff -a
+
+- name: حذف swap از /etc/fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^.*swap.*$'
+    replace: ''

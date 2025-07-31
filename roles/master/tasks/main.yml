@@ -1,0 +1,26 @@
+- name: راه‌اندازی مستر نود
+  shell: |
+    kubeadm init --pod-network-cidr={{ pod_network_cidr }} --kubernetes-version={{ kubernetes_version }}
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+- name: ساخت دایرکتوری kube برای کاربر
+  file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: کپی admin.conf برای کاربر
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ ansible_user }}/.kube/config"
+    remote_src: yes
+    owner: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: تولید دستور join
+  shell: kubeadm token create --print-join-command
+  register: join_command
+  run_once: true
+  delegate_to: "{{ groups['master'][0] }}"
