@@ -35,13 +35,13 @@ jobs:
         run: |
             cat > inventory.ini <<EOF
              [master]
-             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.MASTER_PORT }} ansible_user=${{ secrets.MASTER_USER }} ansible_ssh_pass=${{ secrets.MASTER_PASS }}
+             master ansible_host=vm.lab.mecan.ir ansible_port=${{ secrets.MASTER_PORT }} ansible_user=${{ secrets.MASTER_USER }} ansible_ssh_pass=${{ secrets.MASTER_PASS }}
         
              [workers]
-             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER1_PORT }} ansible_user=${{ secrets.WORKER1_USER }} ansible_ssh_pass=${{ secrets.WORKER1_PASS }}
-             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER2_PORT }} ansible_user=${{ secrets.WORKER2_USER }} ansible_ssh_pass=${{ secrets.WORKER2_PASS }}
+             worker1 ansible_host=vm.lab.mecan.ir ansible_port=${{ secrets.WORKER1_PORT }} ansible_user=${{ secrets.WORKER1_USER }} ansible_ssh_pass=${{ secrets.WORKER1_PASS }}
+             worker2 ansible_host=vm.lab.mecan.ir ansible_port=${{ secrets.WORKER2_PORT }} ansible_user=${{ secrets.WORKER2_USER }} ansible_ssh_pass=${{ secrets.WORKER2_PASS }}
             EOF
-              
+            echo  ${{ secrets.MASTER_HOST }}
 
       # - name: Set SSH passwords as secrets
       #   env:
