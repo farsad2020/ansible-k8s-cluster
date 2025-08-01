@@ -31,20 +31,35 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Set SSH passwords as secrets
-        env:
-          MASTER_PASS: ${{ secrets.MASTER_PASS }}
-          WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
-          WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
+      - name: Generate dynamic inventory.ini
         run: |
-          echo "MASTER_PASS=$MASTER_PASS" >> $GITHUB_ENV
-          echo "WORKER1_PASS=$WORKER1_PASS" >> $GITHUB_ENV
-          echo "WORKER2_PASS=$WORKER2_PASS" >> $GITHUB_ENV
+            cat > inventory.ini <<EOF
+        [master]
+         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.MASTER_PORT }} ansible_user=${{ secrets.MASTER_USER }} ansible_ssh_pass=${{ secrets.MASTER_PASS }}
+        
+        [workers]
+         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER1_PORT }} ansible_user=${{ secrets.WORKER1_USER }} ansible_ssh_pass=${{ secrets.WORKER1_PASS }}
+         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER2_PORT }} ansible_user=${{ secrets.WORKER2_USER }} ansible_ssh_pass=${{ secrets.WORKER2_PASS }}
+        EOF
+              
 
-      - name: Run Ansible playbook to deploy k8s cluster
-        env:
-          MASTER_PASS: ${{ secrets.MASTER_PASS }}
-          WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
-          WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
-        run: |
-          ansible-playbook -i inventory.ini playbook.yaml
+      # - name: Set SSH passwords as secrets
+      #   env:
+      #     MASTER_PASS: ${{ secrets.MASTER_PASS }}
+      #     WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
+      #     WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
+      #   run: |
+      #     echo "MASTER_PASS=$MASTER_PASS" >> $GITHUB_ENV
+      #     echo "WORKER1_PASS=$WORKER1_PASS" >> $GITHUB_ENV
+      #     echo "WORKER2_PASS=$WORKER2_PASS" >> $GITHUB_ENV
+
+      # - name: Run Ansible playbook to deploy k8s cluster
+      #   env:
+      #     MASTER_PASS: ${{ secrets.MASTER_PASS }}
+      #     WORKER1_PASS: ${{ secrets.WORKER1_PASS }}
+      #     WORKER2_PASS: ${{ secrets.WORKER2_PASS }}
+      #   run: |
+      #     ansible-playbook -i inventory.ini playbook.yaml
+      - name: Run Ansible playbook to deploy K8s
+        run: ansible-playbook -i inventory.ini playbook.yaml
+    
