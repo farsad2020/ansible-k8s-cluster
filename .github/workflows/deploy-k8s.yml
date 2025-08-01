@@ -34,13 +34,13 @@ jobs:
       - name: Generate dynamic inventory.ini
         run: |
             cat > inventory.ini <<EOF
-        [master]
-         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.MASTER_PORT }} ansible_user=${{ secrets.MASTER_USER }} ansible_ssh_pass=${{ secrets.MASTER_PASS }}
+             [master]
+             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.MASTER_PORT }} ansible_user=${{ secrets.MASTER_USER }} ansible_ssh_pass=${{ secrets.MASTER_PASS }}
         
-        [workers]
-         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER1_PORT }} ansible_user=${{ secrets.WORKER1_USER }} ansible_ssh_pass=${{ secrets.WORKER1_PASS }}
-         ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER2_PORT }} ansible_user=${{ secrets.WORKER2_USER }} ansible_ssh_pass=${{ secrets.WORKER2_PASS }}
-        EOF
+             [workers]
+             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER1_PORT }} ansible_user=${{ secrets.WORKER1_USER }} ansible_ssh_pass=${{ secrets.WORKER1_PASS }}
+             ${{ secrets.MASTER_HOST }} ansible_port=${{ secrets.WORKER2_PORT }} ansible_user=${{ secrets.WORKER2_USER }} ansible_ssh_pass=${{ secrets.WORKER2_PASS }}
+            EOF
               
 
       # - name: Set SSH passwords as secrets
